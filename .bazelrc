@@ -1,0 +1,14 @@
+# Enable verbose output
+build --verbose_failures
+
+# Set Rust toolchain
+build --rustcopt=-Ctarget-cpu=native
+
+# Parallelism
+build --jobs=8
+
+# Cache
+build --disk_cache=./.build_cache/bazel
+
+# Python
+build --python_path=$(which python3)

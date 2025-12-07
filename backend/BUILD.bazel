@@ -1,0 +1,8 @@
+load("@rules_rust//rust:rust.bzl", "rust_binary")
+
+rust_binary(
+    name = "backend_bin",
+    srcs = glob(["src/**/*.rs"]),
+    crate_root = "src/main.rs",
+    edition = "2024",
+)
