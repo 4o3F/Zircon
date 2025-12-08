@@ -25,3 +25,8 @@ CREATE TABLE interactions (
     updated_at TIMESTAMP,
     PRIMARY KEY (user_id, anime_id)
 );
+
+CREATE TABLE crawl_status (
+  crawl_mode TEXT,
+  crawl_offset INT
+);

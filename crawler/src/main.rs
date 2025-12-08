@@ -1,11 +1,29 @@
 #![deny(clippy::unwrap_used)]
 
+mod mode;
+mod utils;
+
 use std::env;
 
+use clap::Parser;
 use sqlx::postgres::PgPoolOptions;
 use tracing::{Level, error};
 use tracing_subscriber::FmtSubscriber;
 use tracing_unwrap::ResultExt;
+
+#[derive(clap::Parser)]
+#[command(about, version)]
+struct Cli {
+    #[command(subcommand)]
+    mode: CrawlerMode,
+}
+
+#[derive(clap::Subcommand)]
+enum CrawlerMode {
+    Anime,
+    User,
+    Interaction,
+}
 
 #[tokio::main]
 async fn main() {
@@ -14,6 +32,8 @@ async fn main() {
         .finish();
 
     tracing::subscriber::set_global_default(subscriber).expect("Set default subscriber failed");
+
+    let cli = Cli::parse();
 
     if let Err(e) = dotenv::dotenv() {
         error!("Environment variable load failed! {}", e);
@@ -32,4 +52,10 @@ async fn main() {
         .run(&db)
         .await
         .expect_or_log("Failed to run database migration");
+
+    match cli.mode {
+        CrawlerMode::Anime => mode::anime::crawl_anime(&db).await,
+        CrawlerMode::User => todo!(),
+        CrawlerMode::Interaction => todo!(),
+    }
 }
